@@ -1,19 +1,23 @@
-﻿using Microsoft.Xna.Framework;
+﻿using IL.Terraria.ID;
+using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace ExtraExplosives.Projectiles
 {
-	public class TornadoBombProjectileTornado : ModProjectile
+	public class TornadoBombProjectileTornado : ExplosiveProjectile
 	{
+		protected override string explodeSoundsLoc => "n/a";
+		protected override string goreFileLoc => "n/a";
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tornado");
 			Main.projFrames[projectile.type] = 6;
 		}
 
-		public override void SetDefaults()
+		public override void SafeSetDefaults()
 		{
 			projectile.CloneDefaults(386);
 			//projectile.tileCollide = true;
@@ -131,10 +135,10 @@ namespace ExtraExplosives.Projectiles
 			{
 				float num621 = 0.104719758f;
 				float num622 = (float)projectile.width / 5f;
-				if (projectile.type == 386)
-				{
-					num622 *= 2f;
-				}
+				//if (projectile.type == 386)
+				//{
+				//	num622 *= 2f;
+				//}
 				float num623 = (float)(Math.Cos((double)num621 * (0.0 - (double)projectile.ai[0])) - 0.5) * num622;
 				projectile.position.X = projectile.position.X - num623 * (0f - (float)projectile.direction);
 				projectile.ai[0] -= 1f;
@@ -146,37 +150,41 @@ namespace ExtraExplosives.Projectiles
 			Player player = Main.player[Main.myPlayer];
 
 			//Player
-			if ((projectile.position.X / 16) <= ((player.position.X + 700) / 16) && (projectile.position.X / 16) >= ((player.position.X - 700) / 16))
+			if (!player.EE().BlastShielding)
 			{
-				//X
-				if (player.position.X <= (projectile.position.X + 30))
+				if ((projectile.position.X / 16) <= ((player.position.X + 700) / 16) &&
+				    (projectile.position.X / 16) >= ((player.position.X - 700) / 16))
 				{
-					//player.velocity.X = 2;
-					player.velocity.X = player.velocity.X + 0.3f;
-				}
-				else
-				{
-					//player.velocity.X = -2;
-					player.velocity.X = player.velocity.X - 0.3f;
-				}
+					//X
+					if (player.position.X <= (projectile.position.X + 30))
+					{
+						//player.velocity.X = 2;
+						player.velocity.X = player.velocity.X + 0.3f;
+					}
+					else
+					{
+						//player.velocity.X = -2;
+						player.velocity.X = player.velocity.X - 0.3f;
+					}
 
-				//Y
-				if (player.position.Y <= (projectile.position.Y - 200))
-				{
-					//player.velocity.Y = 2;
-					player.velocity.Y = player.velocity.Y + .5f;
-				}
-				else
-				{
-					//player.velocity.Y = -2;
-					player.velocity.Y = player.velocity.Y - .5f;
+					//Y
+					if (player.position.Y <= (projectile.position.Y - 200))
+					{
+						//player.velocity.Y = 2;
+						player.velocity.Y = player.velocity.Y + .5f;
+					}
+					else
+					{
+						//player.velocity.Y = -2;
+						player.velocity.Y = player.velocity.Y - .5f;
+					}
 				}
 			}
 
 			//NPCS
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
-				if ((projectile.position.X / 16) <= ((Main.npc[i].position.X + 700) / 16) && (projectile.position.X / 16) >= ((Main.npc[i].position.X - 700) / 16) && !Main.npc[i].boss)
+				if ((projectile.position.X / 16) <= ((Main.npc[i].position.X + 700) / 16) && (projectile.position.X / 16) >= ((Main.npc[i].position.X - 700) / 16) && !Main.npc[i].boss && Main.npc[i].type != 488)
 				{
 					Main.npc[i].netUpdate = true;
 

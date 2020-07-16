@@ -5,23 +5,23 @@ using Terraria.ModLoader;
 
 namespace ExtraExplosives.Items.Explosives
 {
-	public class PhaseBombItem : ModItem
+	public class PhaseBombItem : ExplosiveItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("PhaseBomb");
 			Tooltip.SetDefault("Goes through the ground \n" +
-				"Hold left click to phase. Upon release, the bomb will blow up. \n" +
-				"WARNING: Make sure you’re not throwing it while your inventory is open.");
+				"Hold left click to phase. Upon release, the bomb will blow up");
 
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(5, 10));
 			//ItemID.Sets.AnimatesAsSoul[item.type] = true;
 			//ItemID.Sets.ItemIconPulse[item.type] = true;
 		}
 
-		public override void SetDefaults()
+		public override void SafeSetDefaults()
 		{
-			item.damage = 0;	 //The damage stat for the Weapon.
+			item.damage = 450;	 //The damage stat for the Weapon.
+			item.knockBack = 40;
 			item.width = 20;	//sprite width
 			item.height = 20;   //sprite height
 			item.maxStack = 999;   //This defines the items max stack

@@ -1,7 +1,10 @@
+using ExtraExplosives.NPCs.CaptainExplosiveBoss;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -9,16 +12,30 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
-using static ExtraExplosives.GlobalMethods;
 
+using static ExtraExplosives.GlobalMethods;
+using System;
+using Terraria.ModLoader.UI.ModBrowser;
+using System.Net;
+using System.Data;
+using ExtraExplosives.NPCs.CaptainExplosiveBoss;
+using ExtraExplosives.UI;
+using ExtraExplosives.UI.AnarchistCookbookUI;
 
 namespace ExtraExplosives
 {
 	public class ExtraExplosives : Mod
 	{
+
+		private GameTime _lastUpdateUiGameTime;
+		
 		//move the first 4 over to player????
 		internal static ModHotKey TriggerExplosion;
+
 		internal static ModHotKey TriggerUIReforge;
+
+		internal static ModHotKey ToggleCookbookUI;
+		
 
 		public static bool NukeActivated;
 		public static bool NukeActive;
@@ -28,20 +45,29 @@ namespace ExtraExplosives
 		internal static float dustAmount;
 		internal UserInterface ExtraExplosivesUserInterface;
 		internal UserInterface ExtraExplosivesReforgeBombInterface;
+		private UserInterface cookbookInterface;
+		private UserInterface buttonInterface;
+		internal ButtonUI ButtonUI;
+		internal CookbookUI CookbookUI;
+
+		internal static ExtraExplosivesConfig EEConfig;
 
 		public static string GithubUserName => "VolcanicMG";
 		public static string GithubProjectName => "ExtraExplosives";
 
+		public static string ModVersion;
+		public static string CurrentVersion;
+
+		// Create the item to item id reference (used with cpt explosive) Needs to stay loaded
 		public ExtraExplosives()
 		{
-
 		}
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{
 			int check = reader.ReadVarInt();
 			////Don't use as of right now
-			//if (reader.ReadString() == "boom") //set to a byte, 
+			//if (reader.ReadString() == "boom") //set to a byte,
 			//{
 			//	if (Main.netMode == NetmodeID.Server)//set the other players to have the same properties besides the client
 			//	{
@@ -51,7 +77,6 @@ namespace ExtraExplosives
 			//	}
 			//	else//set what you want to happen
 			//	{
-
 			//		NukeActive = true;
 			//	}
 			//}
@@ -115,17 +140,25 @@ namespace ExtraExplosives
 				censusMod.Call("TownNPCCondition", NPCType("CaptainExplosive"), "Kill King Slime"); //Change later for the boss
 			}
 
-			SetupListsOfUnbreakableTiles();
-
 			base.PostSetupContent();
 		}
 
-
 		public override void UpdateUI(GameTime gameTime)
 		{
-
 			ExtraExplosivesUserInterface?.Update(gameTime);
 			//ExtraExplosivesReforgeBombInterface?.Update(gameTime);
+			if (CookbookUI.Visible)
+			{ 
+				ButtonUI.Visible = false;
+			}
+			else if (ButtonUI.Visible)
+			{
+				//Main.playerInventory = true;
+				CookbookUI.Visible = false;
+			}
+			
+			buttonInterface?.Update(gameTime);
+			cookbookInterface?.Update(gameTime);
 		}
 
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -155,20 +188,60 @@ namespace ExtraExplosives
 					},
 					InterfaceScaleType.UI)
 				);
+				layers.Insert(inventoryIndex, new LegacyGameInterfaceLayer(
+					"ExtraExplosives: CookbookButton",
+					delegate
+					{
+						if (ButtonUI.Visible && Main.playerInventory)
+						{
+							buttonInterface.Draw(Main.spriteBatch, new GameTime());
+						}
+						return true;
+					},
+					InterfaceScaleType.UI));
+			}
+
+			if (mouseTextIndex != -1)
+			{
+				layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
+					"ExtraExplosives: CookbookUI",
+					delegate
+					{
+						if (CookbookUI.Visible && !Main.playerInventory)
+						{
+							cookbookInterface.Draw(Main.spriteBatch, new GameTime());
+						}
+						return true;
+					},
+					InterfaceScaleType.UI));
 			}
 		}
 
-
 		public override void Load()
 		{
-
-			Logger.InfoFormat("{0} Extra Explosives logger", Name);
+			Logger.InfoFormat($"{0} Extra Explosives logger", Name);
 
 			ExtraExplosivesUserInterface = new UserInterface();
 			ExtraExplosivesReforgeBombInterface = new UserInterface();
 
 			TriggerExplosion = RegisterHotKey("Explode", "Mouse2");
 			TriggerUIReforge = RegisterHotKey("Open Reforge Bomb UI", "P");
+			ToggleCookbookUI = RegisterHotKey("UIToggle", "\\");
+
+			if (!Main.dedServ)
+			{
+				cookbookInterface = new UserInterface();
+				buttonInterface = new UserInterface();
+				
+				ButtonUI = new ButtonUI();
+				ButtonUI.Activate();
+
+				CookbookUI = new CookbookUI();
+				CookbookUI.Deactivate();
+				
+				cookbookInterface.SetState(CookbookUI);
+				buttonInterface.SetState(ButtonUI);
+			}
 
 			if (Main.netMode != NetmodeID.Server)
 			{
@@ -180,8 +253,30 @@ namespace ExtraExplosives
 				Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/NukeShader")); // The path to the compiled shader file.
 				Filters.Scene["BigBang"] = new Filter(new ScreenShaderData(screenRef2, "BigBang"), EffectPriority.VeryHigh); //float4 name
 				Filters.Scene["BigBang"].Load();
+
+				// Shader stuff sent in this pull cuz i didnt want to delete it, ignore for now
+				Ref<Effect> burningScreenFilter = new Ref<Effect>(GetEffect("Effects/HPScreenFilter"));
+				Filters.Scene["BurningScreen"] = new Filter(new ScreenShaderData(burningScreenFilter, "BurningScreen"), EffectPriority.Medium); // Shouldnt override more important shaders
+				Filters.Scene["BurningScreen"].Load();
+				
+				Ref<Effect> bombShader = new Ref<Effect>(GetEffect("Effects/bombshader"));
+				GameShaders.Misc["bombshader"] = new MiscShaderData(bombShader, "BombShader");
 			}
 
+			Mod yabhb = ModLoader.GetMod("FKBossHealthBar");
+			if (yabhb != null)
+			{
+				yabhb.Call("hbStart");
+				yabhb.Call("hbSetTexture",
+				 GetTexture("NPCs/CaptainExplosiveBoss/healtbar_left"),
+				 GetTexture("NPCs/CaptainExplosiveBoss/healtbar_frame"),
+				 GetTexture("NPCs/CaptainExplosiveBoss/healtbar_right"),
+				 GetTexture("NPCs/CaptainExplosiveBoss/healtbar_fill"));
+				//yabhb.Call("hbSetMidBarOffset", 20, 12);
+				//yabhb.Call("hbSetBossHeadCentre", 22, 34);
+				yabhb.Call("hbFinishSingle", ModContent.NPCType<CaptainExplosiveBoss>());
+			}
 		}
+		
 	}
 }

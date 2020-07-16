@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using ExtraExplosives.Items.Explosives;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace ExtraExplosives.Items.Weapons
@@ -12,7 +14,7 @@ namespace ExtraExplosives.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 100;
+			item.damage = 250;
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.useAnimation = 16;
 			item.useTime = 22;
@@ -23,7 +25,7 @@ namespace ExtraExplosives.Items.Weapons
 			item.maxStack = 99;
 			item.scale = 1f;
 			item.rare = ItemRarityID.Yellow;
-			item.value = 30000;
+			item.value = Item.buyPrice(0, 1, 0, 50);
 			item.consumable = true;
 
 			item.noMelee = true; // Important because the spear is actually a projectile instead of an item. This prevents the melee hitbox of this item.
@@ -33,8 +35,18 @@ namespace ExtraExplosives.Items.Weapons
 			item.shoot = mod.ProjectileType("PrismBomb");
 		}
 
-		public override void AddRecipes()//whatever the reipe is
+		public override void AddRecipes()//whatever the recipe is
 		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LargeDiamond, 1);
+			recipe.AddIngredient(ItemID.LargeAmethyst, 1);
+			recipe.AddIngredient(ItemID.LargeEmerald, 1);
+			recipe.AddIngredient(ItemID.LargeRuby, 1);
+			recipe.AddIngredient(ItemID.FallenStar, 10);
+			recipe.AddIngredient(ModContent.ItemType<MediumExplosiveItem>(), 1);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 	}
 }

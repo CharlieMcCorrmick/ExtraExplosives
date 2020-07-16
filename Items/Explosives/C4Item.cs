@@ -4,17 +4,16 @@ using Terraria.ModLoader;
 
 namespace ExtraExplosives.Items.Explosives
 {
-	public class C4Item : ModItem
+	public class C4Item : ExplosiveItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("C4");
-			Tooltip.SetDefault("Keep a safe distance! \n" +
-				"Make sure to set the explosion button in the settings.\n" +
+			Tooltip.SetDefault("Make sure to set the explosion button in the settings.\n" +
 				"[c/AB40FF:Can destroy dungeon bricks and desert fossils]");
 		}
 
-		public override void SetDefaults()
+		public override void SafeSetDefaults()
 		{
 			item.damage = 0;	 //The damage stat for the Weapon.
 			item.width = 20;	//sprite width

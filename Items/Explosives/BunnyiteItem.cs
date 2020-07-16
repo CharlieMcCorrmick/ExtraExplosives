@@ -4,16 +4,15 @@ using Terraria.ModLoader;
 
 namespace ExtraExplosives.Items.Explosives
 {
-	public class BunnyiteItem : ModItem
+	public class BunnyiteItem : ExplosiveItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bunnyite");
-			Tooltip.SetDefault("Lot O' Bunnies!!!\n" +
-				"Resist the urge. You don't have to do this.");
+			Tooltip.SetDefault("Spawns in bunnies");
 		}
 
-		public override void SetDefaults()
+		public override void SafeSetDefaults()
 		{
 			item.damage = 0;	 //The damage stat for the Weapon.
 			item.width = 20;	//sprite width

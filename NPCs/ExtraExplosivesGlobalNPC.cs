@@ -1,4 +1,5 @@
 using ExtraExplosives.Items;
+using ExtraExplosives.Items.Accessories.AnarchistCookbook;
 using ExtraExplosives.Items.Explosives;
 using Terraria;
 using Terraria.ID;
@@ -42,6 +43,22 @@ namespace ExtraExplosives.NPCs
 					Item.NewItem(Main.LocalPlayer.getRect(), ModContent.ItemType<BreakenTheBankenItem>(), 1);
 				}
 			}
+
+			if (npc.type == NPCID.SkeletonCommando)
+			{
+				if (Main.rand.Next(2) == 0)
+				{
+					Item.NewItem(Main.LocalPlayer.getRect(), ModContent.ItemType<BlastShielding>(), 1);
+				}
+			}
+
+			if (npc.type == NPCID.TacticalSkeleton)
+			{
+				if (Main.rand.Next(2) == 1)
+				{
+					Item.NewItem(Main.LocalPlayer.getRect(), ModContent.ItemType<ReactivePlating>(), 1);
+				}
+			}
 		}
 
 		public override void SetupShop(int type, Chest shop, ref int nextSlot)
@@ -58,6 +75,18 @@ namespace ExtraExplosives.NPCs
 			}
 			else if (type == NPCID.TravellingMerchant)
 			{
+				if(Main.hardMode)
+				{
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<TornadoBombItem>());
+					nextSlot++;
+				}
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<RainboomItem>());
+				nextSlot++;
+			}
+			else if(type == NPCID.Merchant)
+			{
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<PotatoItem>());
+				nextSlot++;
 				shop.item[nextSlot].SetDefaults(ModContent.ItemType<SpongeItem>());
 				nextSlot++;
 			}

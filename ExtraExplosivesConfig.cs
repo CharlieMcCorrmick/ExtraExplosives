@@ -1,10 +1,29 @@
 using ExtraExplosives.Projectiles;
 using System.ComponentModel;
+using Microsoft.Xna.Framework;
 using Terraria.ModLoader.Config;
 
 namespace ExtraExplosives
 {
 	public class ExtraExplosivesConfig : ModConfig
+	{
+		public override ConfigScope Mode => ConfigScope.ClientSide;
+		public override void OnLoaded() => ExtraExplosives.EEConfig = this;
+		
+		[DefaultValue(typeof(Vector2), "-300, -50")]
+		[Range(-1920f, 0f)]
+		[Label("$Mods.ExtraExplosives.ExtraExplosivesConfig.Label.AnarchistCookbookPos")]
+		[Tooltip("$Mods.ExtraExplosives.ExtraExplosivesConfig.Tooltip.AnarchistCookbookPos")]
+		public Vector2 AnarchistCookbookPos { get; set; }
+		
+		public override void OnChanged()
+		{
+			base.OnChanged();
+		}
+	}	
+	
+	[Label("$Mods.ExtraExplosives.ExtraExplosivesConfigs.Title.ExtraExplosivesServerConfig")]
+	public class ExtraExplosivesServerConfig : ModConfig
 	{
 		public override ConfigScope Mode => ConfigScope.ServerSide; //Change to client to make it only applicable to the client side
 
@@ -26,13 +45,6 @@ namespace ExtraExplosives
 		[DefaultValue(1f)]
 		[Slider]
 		public float dustAmount;
-
-		[Header("Dynamic Bullet Boom Integration")]
-		[Label("Use ammo from other mods in bullet booms? (Reload Required)")]
-		[Tooltip("Developmental Feature")]
-		[DefaultValue(false)]
-		[ReloadRequired]
-		public bool generateForeignBulletBooms;
 
 		public override void OnChanged()
 		{
@@ -58,7 +70,6 @@ namespace ExtraExplosives
 			//C4Projectile.CanBreakTiles = CanBreakTiles;
 			//DaBombProjectile.CanBreakTiles = CanBreakTiles;
 			ExtraExplosives.dustAmount = dustAmount;
-			ExtraExplosives.generateForeignBulletBooms = generateForeignBulletBooms;
 		}
 	}
 }

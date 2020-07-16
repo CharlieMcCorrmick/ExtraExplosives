@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ethan\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\ExtraExplosives\\ExtraExplosives.csproj": {}
+    "C:\\Users\\120x1n\\Downloads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ethan\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\ExtraExplosives\\ExtraExplosives.csproj": {
+    "C:\\Users\\120x1n\\Downloads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ethan\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\ExtraExplosives\\ExtraExplosives.csproj",
+        "projectUniqueName": "C:\\Users\\120x1n\\Downloads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives.csproj",
         "projectName": "ExtraExplosives",
-        "projectPath": "C:\\Users\\Ethan\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\ExtraExplosives\\ExtraExplosives.csproj",
-        "packagesPath": "C:\\Users\\Ethan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ethan\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\ExtraExplosives\\obj\\",
+        "projectPath": "C:\\Users\\120x1n\\Downloads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives.csproj",
+        "packagesPath": "C:\\Users\\120x1n\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\120x1n\\Downloads\\ExtraExplosives-8_Ninja-s-Uploads\\ExtraExplosives-8_Ninja-s-Uploads\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Ethan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\120x1n\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -45,8 +45,7 @@
               "target": "Package",
               "version": "[0.1.*, )"
             }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          }
         }
       }
     }
